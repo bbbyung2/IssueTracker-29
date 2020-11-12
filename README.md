@@ -1,4 +1,24 @@
 # 📌 Issue Tracker in Team 29
+## TEAM 하이고(HIGH GO)
+
+<p align="center"><img src="https://user-images.githubusercontent.com/59721541/98637376-b0d2a600-236b-11eb-95c0-2bcff9740df3.png" width="300"></p>
+
+<div align="center">
+   
+![Javascript](https://img.shields.io/badge/JavaScript-ES6+-yellow?logo=javascript)
+![react](https://img.shields.io/badge/React-17.0.1-1cf?logo=react)
+![NodeJS](https://img.shields.io/badge/node.js-v14.5.0-green?logo=node.js)
+![express](https://img.shields.io/badge/Express-4.16.1-skyblue?logo=Node.js)
+![Babel](https://img.shields.io/badge/@babel/core-7.12.3-yellow?logo=babel) 
+![Webpack](https://img.shields.io/badge/Webpack-5.3.1-blue?logo=Webpack) 
+![MySQL](https://img.shields.io/badge/MySQL-v5.7.32-blue?logo=mysql)
+
+[![GitHub Open Issues](https://img.shields.io/github/issues-raw/boostcamp-2020/IssueTracker-29?color=green)](https://github.com/boostcamp-2020/IssueTracker-29/issues)
+[![GitHub Closed Issues](https://img.shields.io/github/issues-closed-raw/boostcamp-2020/IssueTracker-29?color=red)](https://github.com/boostcamp-2020/IssueTracker-29/issues)
+[![GitHub Open PR](https://img.shields.io/github/issues-pr-raw/boostcamp-2020/IssueTracker-29?color=green)](https://github.com/boostcamp-2020/IssueTracker-29/issues)
+[![GitHub Closed PR](https://img.shields.io/github/issues-pr-closed-raw/boostcamp-2020/IssueTracker-29?color=red)](https://github.com/boostcamp-2020/IssueTracker-29/issues)
+
+</div>
 
 ## 🏃‍♀️🏃‍♂️ 팀원
 

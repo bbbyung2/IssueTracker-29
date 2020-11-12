@@ -1,6 +1,18 @@
 import { useContext, useState, useEffect } from 'react';
+import { FETCH_LABEL } from '../../reducer/label.js';
 import { sendGetRequest } from '../common/api.js';
-import { IssueContext, LabelContext, MilestoneContext } from '../common/context';
+import { IssueContext, LabelContext, MilestoneContext, UserContext } from '../common/context';
+
+const useUsers = () => {
+  const [users, setUsers] = useState([]);
+
+  useEffect(async () => {
+    const users = await sendGetRequest('/user');
+    setUsers(users.map(item => ({ username: item.username, profile: item.profile })));
+  }, []);
+
+  return [users, setUsers];
+};
 
 const putIssuesInState = async (setIssues) => {
     const issues = await sendGetRequest('/issue');
@@ -33,20 +45,14 @@ const useIssueLabels = () => {
   return issueLabels;
 };
 
-
-const putLabelsInState = async (setLabels) => {
-  const labels = await sendGetRequest('/label');
-  setLabels(labels);
-};
-
 const useLabels = () => {
-  const {labels, setLabels} = useContext(LabelContext);
+  const {labelState, labelDispatch} = useContext(LabelContext);
 
   useEffect(() => {
-    putLabelsInState(setLabels);
+    labelDispatch({type: FETCH_LABEL});
   }, []);
 
-  return labels;
+  return labelState;
 }
 
 const putMilestonesInState = async (setMilestones) => {
@@ -64,4 +70,4 @@ const useMilestones = () => {
   return milestones;
 }
 
-export { useIssues, useIssueLabels, useLabels, useMilestones };
+export { useUsers, useIssues, useIssueLabels, useLabels, useMilestones };

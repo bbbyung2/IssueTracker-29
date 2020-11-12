@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
 import styled from 'styled-components';
 import { Link, Redirect } from "react-router-dom";
-import axios from 'axios';
 import { BASE_API_URL } from '../../../util/config';
-import { sendPostRequest } from '../common/api';
+import { sendPostRequest, sendImagePostRequest, sendPutRequest } from '../common/api';
+import NewIssueDetailSideBar from './newIssueSidebar';
+import { useIssueSideBarLabels } from './issueSideBarHook';
+import SvgSettingsLogo from '../common/svgSettingsLogo.js';
+
+const COLOR_SETTINGS = '#959da5';
 
 const ContentContainer = styled.div`
     display: flex;
@@ -71,15 +75,47 @@ const Content = (props) => {
     const [imageFileName, setImageFileName] = useState("");
     const [issueId, setIssueId] = useState(-1);
     const [redirect, setRedirect] = useState(false);
+    const issueLabels = useIssueSideBarLabels(props.id);
+
+    const labels = [];
+    issueLabels.forEach(item => {
+        labels.push(item);
+    });
+
+    const svgSettingsIcon = <SvgSettingsLogo color={COLOR_SETTINGS}/>
+    const labelComponent = labels.map(item => <LabelItem key={item.id} label={item} />)
+
+    const [newAssignees, setNewAssignees] = useState([]);
+    const [newLabels, setNewLabels] = useState([]);
+    const [newMilestone, setNewMilestone] = useState("");
+
+
+
+    const [clear, setClear] = useState(null);
+    const [isLoaded, setIsLoaded] = useState(false);
 
     useEffect( () => {
-        const timeout = setTimeout( () => {
-            setTimeCheck(true);
-            setTimeout( () => {
+        if (timeCheck) {
+            clearTimeout(clear)
+            setClear(setTimeout(() => {
                 setTimeCheck(false);
-            }, 2000);
+            }, 2000));
+            
+            return;
+        }
+        const timeout = (!isLoaded) ? null : setTimeout( () => {
+            setTimeCheck(true);
+            setClear(setTimeout( () => {
+                setTimeCheck(false);
+            }, 2000));
         }, 2000);
-        return () => clearTimeout(timeout);
+
+        setIsLoaded(true);
+        
+        return () => {
+            clearTimeout(timeout)
+            clearTimeout(clear);
+        };
     }, [content]);
 
     useEffect( () => {
@@ -102,6 +138,17 @@ const Content = (props) => {
         const resultIssueId = await sendPostRequest('/issue', {title:title});
         setIssueId(resultIssueId.result);
         await sendPostRequest(`/issue/${resultIssueId.result}/comment`, {contents:content});
+        
+        newAssignees.forEach(async (id) => {
+            await sendPostRequest(`/issue/${resultIssueId.result}/assigns`, {userid:id});
+        })
+
+        newLabels.forEach(async (id) => {
+            await sendPostRequest(`/issue/${resultIssueId.result}/label/${id}`);
+        })
+
+        await sendPutRequest(`/issue/${resultIssueId.result}/milestone/${newMilestone.id}`);
+        
         setRedirect(true);
     };
     
@@ -114,6 +161,7 @@ const Content = (props) => {
     };
 
     return (
+        <>
         <ContentContainer>
             <TitleInput placeholder="Title" onChange={changeTitleData}/>
             <div>Write</div>
@@ -122,7 +170,7 @@ const Content = (props) => {
                 <TextCountSpan timeCheck={timeCheck}>{characterCount} characters</TextCountSpan>
             </ContentWrap>
             
-            <ImageFileBoxLabel for="file">Attach files by selecting here</ImageFileBoxLabel>
+            <ImageFileBoxLabel htmlFor="file">Attach files by selecting here</ImageFileBoxLabel>
             <ImageFileBoxInput type="file" id="file" accept="image/jpeg, image/jpg, image/png" onChange={handleImageFile}></ImageFileBoxInput>
             
             <ButtonContainer>
@@ -133,20 +181,9 @@ const Content = (props) => {
             </ButtonContainer>
             {(!redirect)? null : <Redirect to={`/issue/${issueId}`}/>}
         </ContentContainer>
+        <NewIssueDetailSideBar settingsIcon={svgSettingsIcon} labels={labelComponent} newAssignees={newAssignees} setNewAssignees={setNewAssignees} newLabels={newLabels} setNewLabels={setNewLabels} newMilestone={newMilestone} setNewMilestone={setNewMilestone} />
+        </>
     );
-};
-
-const sendImagePostRequest = async (path, form) => {
-    try {
-        const res = await axios.post(BASE_API_URL + path, form, {
-            headers: {
-                'Content-Type': 'multipart/form-data',
-            }
-        });
-        return res.data;
-    } catch (e) {
-        return [];
-    }
 };
 
 function convertMarkDownImage(imageFileName, imageURL) {

@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 const HeaderContainer = styled.div`
   display: flex;
@@ -13,13 +14,20 @@ const HeaderContainer = styled.div`
   background-color: black;
 `;
 
+const HeaderLinkContainer = styled(Link)`
+  text-decoration: none;
+`;
+
 const Header = (props) => {
   return (
       <>
-        <HeaderContainer>
-        <img />
-        <p>ISSUES</p>
-        </HeaderContainer>
+        <HeaderLinkContainer to="/issue">
+          <HeaderContainer>
+            <img />
+            <p>ISSUES</p>
+          </HeaderContainer>    
+        </HeaderLinkContainer>
+        
     </>
   );
 };
